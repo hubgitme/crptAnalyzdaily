@@ -86,29 +86,29 @@ ${longL > shortL ? "فشار فروش غالب است" : "Short squeeze محتم
  document.getElementById('analysisBox').innerText = txt;
 }
 </script>
+ 
+<div style="margin-top:40px; padding:15px; background:#1a1a1a; color:#fff; border:1px solid #333; border-radius:8px; line-height:1.9; font-size:14px;">
 
-راهنمای تعیین روند:
+    <b>راهنمای تعیین روند</b><br><br>
 
-<br>روند صعودی پایدار 
-<br><code> if(delta > 0 && CVD_total > 0    && etfNet > 0 && net < 0) 
-</code>
+    1. <b>روند صعودی پایدار</b><br>
+    <code>if (delta > 0 && CVD_total > 0 && etfNet > 0 && net < 0)</code>
+    <br><br>
 
-<br><br> روند نزولی قوی
-<br><code> if(delta < 0 && CVD_total < 0   && etfNet < 0 && net > 0)
-</code>
+    2. <b>روند نزولی قوی</b><br>
+    <code>if (delta < 0 && CVD_total < 0 && etfNet < 0 && net > 0)</code>
+    <br><br>
 
+    3. <b>احتمال اصلاح به دلیل اشباع خرید</b><br>
+    <code>if (rsi > 70 && etfNet < 0)</code>
+    <br><br>
 
-<br><br> احتمال اصلاح به دلیل اشباع خرید
-<br><code>  if(rsi > 70 && etfNet < 0)
-</code>
+    4. <b>احتمال برگشت رو به بالا (واگرایی احتمالی)</b><br>
+    <code>if (rsi < 30 && delta > 0)</code>
 
-<br><br>احتمال برگشت رو به بالا (واگرایی احتمالی)
-<br><code>  if(rsi < 30 && delta > 0) 
-</code>
-
-
-
- </div>
+</div>
+     
 </body>
 
 </html>
+
