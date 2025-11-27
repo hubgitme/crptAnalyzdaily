@@ -81,5 +81,18 @@ function generateSummary() {
     '<p>یادداشت: ' + f.notes.value + '</p>';
 }
 </script>
+
+  <div style="margin-top:30px; padding:14px; background:#122; border-radius:10px; font-size:13px; color:#9fc9ff; line-height:1.8;">
+راهنمای تعیین روند:
+
+<br>شرط صعودی:
+<br><code>if (etf > 0 && spotNet > 0 && totalLiq < (price * 1000)) trend 
+;</code>
+
+<br><br>شرط نزولی:
+<br><code>if (etf < 0 && spotNet < 0 && totalLiq > (price * 1000)) trend 
+</code>
+</div>
+  
 </body>
 </html>
