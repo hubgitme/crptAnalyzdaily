@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mobile Crypto Analysis Form V2</title>
+<style>
+ body { font-family: sans-serif; background: #111; color: #eee; padding: 16px; }
+ h2 { color: #00ffa6; margin-top: 28px; }
+ input, select { width: 100%; padding: 10px; border-radius: 8px; margin: 6px 0 14px; border: 1px solid #444; background: #222; color: #fff; }
+ button { width: 100%; padding: 14px; background: #00ffa6; color: #000; font-size: 17px; border-radius: 10px; border: none; font-weight: bold; margin-top: 20px; }
+ #analysisBox { margin-top: 25px; background: #1c1c1c; padding: 16px; border-radius: 12px; white-space: pre-line; line-height: 1.7; }
+</style>
+</head>
+<body>
+<h2>📊 تحلیل‌گر موبایل - نسخه حرفه‌ای</h2>
+<hr style="border:1px solid #333" /><h2>Market Overview</h2>
+<input id="oi" placeholder="Open Interest (مثال: 15200000000)" />
+<input id="longLiq" placeholder="Long Liquidations" />
+<input id="shortLiq" placeholder="Short Liquidations" />
+<input id="funding" placeholder="Funding Rate (مثال: 0.012)" />
+<input id="volume" placeholder="Volume" />
+<input id="netflow" placeholder="Exchange Netflow (مثال: -980000000)" /><h2>ETF</h2>
+<input id="etfIn" placeholder="ETF Inflow" />
+<input id="etfOut" placeholder="ETF Outflow" /><h2>Indicators</h2>
+<input id="cvd" placeholder="CVD" />
+<input id="fear" placeholder="Fear & Greed Index" />
+<input id="rsi" placeholder="RSI" />
+<input id="dom" placeholder="BTC Dominance" /><button onclick="generate()">🔵 تولید تحلیل</button>
+
+<div id="analysisBox"></div><script>
+function num(v){ return Number(v.replace(/,/g, '')) || 0; }
+
+function generate(){
+ const oi = num(document.getElementById('oi').value);
+ const longL = num(document.getElementById('longLiq').value);
+ const shortL = num(document.getElementById('shortLiq').value);
+ const fund = Number(document.getElementById('funding').value);
+ const vol = num(document.getElementById('volume').value);
+ const net = num(document.getElementById('netflow').value);
+ const etfIn = num(document.getElementById('etfIn').value);
+ const etfOut = num(document.getElementById('etfOut').value);
+ const cvd = num(document.getElementById('cvd').value);
+ const fear = num(document.getElementById('fear').value);
+ const rsi = num(document.getElementById('rsi').value);
+ const dom = num(document.getElementById('dom').value);
+
+ const etfNet = etfIn - etfOut;
+
+ let trend = "";
+ if(etfNet > 0 && net < 0 && rsi < 70) trend = "📈 روند کوتاه‌مدت: صعودی با حمایت ETF و خروج نقدینگی صرافی‌ها";
+ else if(etfNet < 0 && net < 0) trend = "⚠️ روند کوتاه‌مدت: رنج متمایل به نزولی (فشار فروش و خروج نقدینگی)";
+ else if(etfNet < 0 && rsi > 70) trend = "📉 روند: اشباع خرید + ETF منفی → احتمال اصلاح";
+ else trend = "🔍 روند خنثی → نیازمند داده‌های بیشتر";
+
+ let txt = `📌 **نتیجه تحلیل:**
+${trend}
+
+-----------------------------
+
+📊 **ETF**
+• Inflow: ${etfIn.toLocaleString()}
+• Outflow: ${etfOut.toLocaleString()}
+• Netflow: ${etfNet.toLocaleString()}
+
+-----------------------------
+
+💰 **Exchange Netflow**
+${net > 0 ? "ورود سرمایه به صرافی‌ها → افزایش احتمال فروش" : "خروج سرمایه → نشانهٔ صعودی"}
+
+-----------------------------
+
+📉 **Liquidations**
+• Long: ${longL.toLocaleString()}
+• Short: ${shortL.toLocaleString()}
+${longL > shortL ? "فشار فروش غالب است" : "Short squeeze محتمل است"}
+
+-----------------------------
+
+📈 **Indicators**
+• CVD: ${cvd.toLocaleString()}
+• RSI: ${rsi}
+• F&G: ${fear}
+• Dominance: ${dom}%
+
+`;
+ document.getElementById('analysisBox').innerText = txt;
+}
+</script></body>
+</html>

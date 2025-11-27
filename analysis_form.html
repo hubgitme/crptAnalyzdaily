@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فرم موبایل تحلیل روزانه CoinGlass</title>
+<style>
+  body { font-family: Tahoma, sans-serif; background:#0f1724; color:#e6eef8; padding:12px; }
+  .card { background:#0b1220; padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(2,6,23,0.6); margin-bottom:12px; }
+  label { display:block; font-size:14px; margin-bottom:6px; color:#cfe6ff; }
+  input, textarea, select { width:100%; padding:10px; border-radius:8px; border:1px solid #274060; background:#071025; color:#e6eef8; }
+  button { width:100%; padding:12px; border-radius:10px; border:none; background:#0ea5a3; color:#021320; font-weight:bold; margin-top:10px; }
+  small { color:#94a3b8; }
+</style>
+</head>
+<body>
+<h2>فرم موبایل تحلیل روزانه CoinGlass</h2>
+<p><small>فیلدها را پر کن و خروجی خلاصه را دریافت کن.</small></p>
+
+<form id="analysisForm" class="card">
+  <label>تاریخ</label>
+  <input name="date" type="date" required>
+
+  <label>قیمت BTC (USD)</label>
+  <input name="price" type="number" step="0.01">
+
+  <label>حجم 24h</label>
+  <input name="volume" type="text">
+
+  <label>ETF Netflow (USD)</label>
+  <input name="etf_netflow" type="number" step="1">
+
+  <label>Spot Inflow (USD)</label>
+  <input name="spot_inflow" type="number" step="1">
+
+  <label>Spot Outflow (USD)</label>
+  <input name="spot_outflow" type="number" step="1">
+
+  <label>Open Interest (USD)</label>
+  <input name="oi" type="number" step="1">
+
+  <label>Long Liquidations (USD)</label>
+  <input name="liq_long" type="number" step="1">
+
+  <label>Short Liquidations (USD)</label>
+  <input name="liq_short" type="number" step="1">
+
+  <label>نوت‌ها</label>
+  <textarea name="notes" rows="3"></textarea>
+
+  <button type="button" onclick="generateSummary()">خلاصه تحلیل</button>
+</form>
+
+<div id="summary" class="card" style="display:none"></div>
+
+<script>
+function generateSummary() {
+  const f = document.forms['analysisForm'];
+  const date = f.date.value || '—';
+  const price = parseFloat(f.price.value)||0;
+  const etf = parseFloat(f.etf_netflow.value)||0;
+  const spotIn = parseFloat(f.spot_inflow.value)||0;
+  const spotOut = parseFloat(f.spot_outflow.value)||0;
+  const spotNet = spotIn - spotOut;
+  const oi = parseFloat(f.oi.value)||0;
+  const liqLong = parseFloat(f.liq_long.value)||0;
+  const liqShort = parseFloat(f.liq_short.value)||0;
+  const totalLiq = liqLong + liqShort;
+
+  let trend = 'خنثی';
+  if (etf > 0 && spotNet > 0 && totalLiq < (price*1000)) trend = 'صعودی';
+  if (etf < 0 && spotNet < 0 && totalLiq > (price*1000)) trend = 'نزولی';
+
+  document.getElementById('summary').style.display='block';
+  document.getElementById('summary').innerHTML = '<h3>خلاصه تحلیل — ' + date + '</h3>' +
+    '<p>قیمت: $' + price.toLocaleString() + '</p>' +
+    '<p>ETF Netflow: ' + etf.toLocaleString() + '</p>' +
+    '<p>Spot Netflow: ' + spotNet.toLocaleString() + '</p>' +
+    '<p>Total Liquidations: ' + totalLiq.toLocaleString() + '</p>' +
+    '<p><strong>روند تخمینی: ' + trend + '</strong></p>' +
+    '<p>یادداشت: ' + f.notes.value + '</p>';
+}
+</script>
+</body>
+</html>
