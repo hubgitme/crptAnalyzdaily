@@ -1,108 +1,130 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>چارت بیت‌کوین و دامیننس تتر — 4H / 8H / 1D / هفتگی</title>
-  <style>
-    :root{--bg:#0b1020;--panel:#0f1724;--accent:#00d084;--muted:#98a0b3}
-    html,body{height:100%;margin:0;font-family:Tahoma, Arial, 'Helvetica Neue', sans-serif;background:var(--bg);color:#e6eef6}
-    .container{max-width:1200px;margin:18px auto;padding:14px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    h1{font-size:18px;margin:0}
-    .controls{display:flex;gap:8px;align-items:center}
-    .btn{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.06);padding:6px 10px;border-radius:8px;cursor:pointer}
-    .btn.active{color:#fff;border-color:rgba(0,208,132,0.9);box-shadow:0 6px 18px rgba(0,208,132,0.06)}
-    .charts{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
-    @media(min-width:900px){.charts{grid-template-columns:1fr 1fr}}
-    .card{background:var(--panel);padding:8px;border-radius:10px}
-    .card h2{font-size:14px;margin:0 0 8px 0;color:#cfeef0}
-    .note{font-size:12px;color:var(--muted);margin-top:8px}
-    footer{margin-top:14px;color:var(--muted);font-size:12px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC & Multi-Asset Dashboard – Advanced</title>
+
+<style>
+:root{--bg:#0b1020;--panel:#0f1724;--accent:#00d084;--muted:#98a0b3}
+html,body{margin:0;background:var(--bg);color:#e6eef6;font-family:Tahoma}
+.container{max-width:1500px;margin:12px auto;padding:10px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h1{font-size:15px;margin:0}
+select{padding:5px;border-radius:6px;background:#0f1724;color:#fff;border:1px solid #333;cursor:pointer}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:10px;margin-top:10px}
+.card{background:var(--panel);padding:6px;border-radius:8px}
+.card h2{font-size:12px;margin:4px 0 6px}
+footer{font-size:11px;color:var(--muted);margin-top:8px}
+@media(max-width:600px){.charts{grid-template-columns:1fr}}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <h1>چارت: بیت‌کوین و دامیننس تتر — تایم‌فریم‌ها: 4 ساعته، 8 ساعته، 1 روزه و هفتگی</h1>
-      <div class="controls" role="region" aria-label="تنظیمات تایم‌فریم">
-        <button class="btn" data-interval="240">4 ساعته</button>
-        <button class="btn" data-interval="480">8 ساعته</button>
-        <button class="btn" data-interval="D">1 روزه</button>
-        <button class="btn" data-interval="W">هفتگی</button>
-      </div>
-    </header>
+<div class="container">
 
-    <div class="charts">
-      <div class="card">
-        <h2>قیمت بیت‌کوین (BINANCE:BTCUSDT)</h2>
-        <div id="tv_btc" style="height:520px"></div>
-        <div class="note">از کلیدهای بالا برای تغییر تایم‌فریم استفاده کنید.</div>
-      </div>
-
-      <div class="card">
-        <h2>دامیننس تتر — USDT Dominance (CRYPTOCAP:USDT.D)</h2>
-        <div id="tv_usdt" style="height:520px"></div>
-        <div class="note">دامیننس تتر = سهم تتر از کل مارکت‌کپ کریپتو.</div>
-      </div>
-    </div>
-
-    <footer>برای نمایش چارت اتصال اینترنت لازم است.</footer>
+<header style="display:flex;align-items:center;gap:10px;">
+  <h1 style="margin:0">BTC / Multi-Asset Dashboard</h1>
+  <div style="margin-left:auto;">
+    <select id="assetSelect">
+      <option value="SOLUSDT" >SOL</option>
+      <option value="ETHUSDT">ETH</option>
+      <option value="ADAUSDT">ADA</option>
+      <option value="CRVUSDT">CRV</option>
+      <option value="NEARUSDT"selected>NEAR</option>
+       <option value="SUIUSDT">SUI</option>
+      <option value="DOGEUSDT">DOGE</option>
+      <option value="XRPUSDT">XRP</option>
+      <option value="XLMUSDT">XLM</option>
+    </select>
   </div>
+</header>
 
-  <script src="https://s3.tradingview.com/tv.js"></script>
-  <script>
-    const widgets = {
-      btc: {container: 'tv_btc', symbol: 'BINANCE:BTCUSDT'},
-      usdt: {container: 'tv_usdt', symbol: 'CRYPTOCAP:USDT.D'}
-    };
+<div class="charts">
+<!-- چارت 1: BTC -->
+<div class="card"><h2>BTC/USDT</h2><div id="c1" style="height:340px"></div></div>
+<!-- چارت 2: USDT Dominance -->
+<div class="card"><h2>USDT Dominance</h2><div id="c2" style="height:340px"></div></div>
+<!-- 6 چارت برای ارز انتخاب شده -->
+<div class="card"><h2 id="t3">Selected – 15m</h2><div id="c3" style="height:340px"></div></div>
+<div class="card"><h2 id="t4">Selected – 30m</h2><div id="c4" style="height:340px"></div></div>
+<div class="card"><h2 id="t5">Selected – 1H</h2><div id="c5" style="height:340px"></div></div>
+<div class="card"><h2 id="t6">Selected – 4H</h2><div id="c6" style="height:340px"></div></div>
+<div class="card"><h2 id="t7">Selected – 1D</h2><div id="c7" style="height:340px"></div></div>
+<div class="card"><h2 id="t8">Selected – 1W</h2><div id="c8" style="height:340px"></div></div>
 
-    function createWidget(kind, interval){
-      const cfg = {
-        width: "100%",
-        height: 520,
-        symbol: widgets[kind].symbol,
-        interval: interval,
-        timezone: "Europe/Paris",
-        theme: "dark",
-        style: "1",
-        locale: "fa",
-        toolbar_bg: "#1f2937",
-        enable_publishing: false,
-        allow_symbol_change: true,
-        hide_side_toolbar: false,
-        container_id: widgets[kind].container
-      };
-      document.getElementById(cfg.container_id).innerHTML = '';
-      return new TradingView.widget(cfg);
-    }
 
-    function init(interval){
-      createWidget('btc', interval);
-      createWidget('usdt', interval);
-    }
+<script src="https://s3.tradingview.com/tv.js"></script>
 
-    function waitForTV(){
-      if(typeof TradingView !== 'undefined'){
-        init('D');
-      } else {
-        setTimeout(waitForTV, 200);
-      }
-    }
+<script>
+const baseCharts=[
+{id:'c1',s:'BINANCE:BTCUSDT',i:'D'},
+{id:'c2',s:'CRYPTOCAP:USDT.D',i:'D'}
+];
 
-    waitForTV();
+let selectedAsset = document.getElementById('assetSelect').value;
+const selectedCharts = [
+{id:'c3',i:'15',title:'15m'},
+{id:'c4',i:'30',title:'30m'},
+{id:'c5',i:'60',title:'1H'},
+{id:'c6',i:'240',title:'4H'},
+{id:'c7',i:'D',title:'1D'},
+{id:'c8',i:'W',title:'1W'}
+];
 
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const interval = btn.getAttribute('data-interval');
-        buttons.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        init(interval);
-      });
-    });
+const studies=["RSI@tv-basicstudies","CCI@tv-basicstudies"];
+const studiesOverrides={
+ "RSI.length":14,
+ "CCI.length":20
+};
 
-    document.querySelector('.btn[data-interval="D"]').classList.add('active');
-  </script>
+function createWidget(container,symbol,interval){
+ document.getElementById(container).innerHTML='';
+ return new TradingView.widget({
+  container_id:container,
+  symbol:symbol,
+  interval:interval,
+  width:'100%',
+  height:340,
+  theme:'dark',
+  locale:'fa',
+  timezone:'Europe/Paris',
+  style:'1',
+  hide_side_toolbar:true,
+  studies:studies,
+  studies_overrides:studiesOverrides,
+  enable_publishing:false,
+  allow_symbol_change:true
+ });
+}
+
+function buildCharts(){
+ // چارت‌های ثابت
+ baseCharts.forEach(c=>{
+   createWidget(c.id,c.s,c.i);
+ });
+ // چارت‌های انتخاب شده
+ selectedCharts.forEach((c)=>{
+   createWidget(c.id,`BINANCE:${selectedAsset}`,c.i);
+   document.getElementById('t'+c.id.slice(1)).innerText = selectedAsset+' – '+c.title;
+ });
+}
+
+// تغییر ارز انتخاب شده
+document.getElementById('assetSelect').addEventListener('change',e=>{
+ selectedAsset = e.target.value;
+ buildCharts();
+});
+
+// آپدیت خودکار هر 30 ثانیه
+function waitTV(){
+ if(typeof TradingView!=='undefined'){
+   buildCharts();
+
+ } else setTimeout(waitTV,200);
+}
+waitTV();
+</script>
+
 </body>
-  </html>
+</html>
