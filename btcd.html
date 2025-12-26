@@ -12,6 +12,8 @@ html,body{margin:0;background:var(--bg);color:#e6eef6;font-family:Tahoma}
 header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 h1{font-size:15px;margin:0}
 select{padding:5px;border-radius:6px;background:#0f1724;color:#fff;border:1px solid #333;cursor:pointer}
+.checkbox-container{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.checkbox-container label{cursor:pointer;}
 .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:10px;margin-top:10px}
 .card{background:var(--panel);padding:6px;border-radius:8px}
 .card h2{font-size:12px;margin:4px 0 6px}
@@ -40,20 +42,30 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
   </div>
 </header>
 
+<!-- چک‌باکس تایم‌فریم‌ها -->
+<div class="checkbox-container">
+  <label><input type="checkbox" class="chartToggle" data-target="c1" checked> BTC/USDT</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c2" checked> USDT Dominance</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c3" checked> 15m</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c4" checked> 30m</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c5" checked> 1H</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c6" checked> 4H</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c7" checked> 1D</label>
+  <label><input type="checkbox" class="chartToggle" data-target="c8" checked> 1W</label>
+</div>
+
 <div class="charts">
 	
-<!-- چارت 1: BTC -->
-<div class="card"><h2>BTC/USDT</h2><div id="c1" style="height:340px"></div></div>
-<!-- چارت 2: USDT Dominance -->
-<div class="card"><h2>USDT Dominance</h2><div id="c2" style="height:340px"></div></div>
+<!-- چارت‌ها -->
+<div class="card" id="card-c1"><h2>BTC/USDT</h2><div id="c1" style="height:340px"></div></div>
+<div class="card" id="card-c2"><h2>USDT Dominance</h2><div id="c2" style="height:340px"></div></div>
+<div class="card" id="card-c3"><h2 id="t3">Selected – 15m</h2><div id="c3" style="height:340px"></div></div>
+<div class="card" id="card-c4"><h2 id="t4">Selected – 30m</h2><div id="c4" style="height:340px"></div></div>
+<div class="card" id="card-c5"><h2 id="t5">Selected – 1H</h2><div id="c5" style="height:340px"></div></div>
+<div class="card" id="card-c6"><h2 id="t6">Selected – 4H</h2><div id="c6" style="height:340px"></div></div>
+<div class="card" id="card-c7"><h2 id="t7">Selected – 1D</h2><div id="c7" style="height:340px"></div></div>
+<div class="card" id="card-c8"><h2 id="t8">Selected – 1W</h2><div id="c8" style="height:340px"></div></div>
 
-<!-- 6 چارت برای ارز انتخاب شده -->
-<div class="card"><h2 id="t3">Selected – 15m</h2><div id="c3" style="height:340px"></div></div>
-<div class="card"><h2 id="t4">Selected – 30m</h2><div id="c4" style="height:340px"></div></div>
-<div class="card"><h2 id="t5">Selected – 1H</h2><div id="c5" style="height:340px"></div></div>
-<div class="card"><h2 id="t6">Selected – 4H</h2><div id="c6" style="height:340px"></div></div>
-<div class="card"><h2 id="t7">Selected – 1D</h2><div id="c7" style="height:340px"></div></div>
-<div class="card"><h2 id="t8">Selected – 1W</h2><div id="c8" style="height:340px"></div></div>
 
 
 <script src="https://s3.tradingview.com/tv.js"></script>
@@ -80,10 +92,8 @@ const studiesOverrides={
  "RSI.plot.color":"#00ff00",
  "CCI.length":20,
  "CCI.plot.color":"#ff9900"
-
 };
 
-// ویجت‌های ثابت فقط یک بار ساخته می‌شوند
 const fixedWidgets = {};
 
 function createWidget(container,symbol,interval){
@@ -107,15 +117,12 @@ function createWidget(container,symbol,interval){
 }
 
 function buildCharts(){
- // چارت‌های ثابت
  baseCharts.forEach(c=>{
    if(!fixedWidgets[c.id]) fixedWidgets[c.id] = createWidget(c.id,c.s,c.i);
  });
 
- // چارت‌های انتخاب شده: هر بار کامل بازسازی می‌شوند تا تغییر ارز کار کند
  selectedCharts.forEach(c=>{
-   const sym = `BINANCE:${selectedAsset}`;
-   createWidget(c.id,sym,c.i);
+   createWidget(c.id,`BINANCE:${selectedAsset}`,c.i);
    document.getElementById('t'+c.id.slice(1)).innerText = selectedAsset+' – '+c.title;
  });
 }
@@ -124,6 +131,15 @@ function buildCharts(){
 document.getElementById('assetSelect').addEventListener('change',e=>{
  selectedAsset = e.target.value;
  buildCharts();
+});
+
+// چک‌باکس برای مخفی کردن/نمایش چارت‌ها
+document.querySelectorAll('.chartToggle').forEach(cb=>{
+ cb.addEventListener('change',e=>{
+   const targetId = e.target.dataset.target;
+   const card = document.getElementById('card-'+targetId);
+   card.style.display = e.target.checked ? 'block' : 'none';
+ });
 });
 
 // آپدیت خودکار هر 30 ثانیه
