@@ -32,7 +32,7 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
       <option value="ADAUSDT">ADA</option>
       <option value="CRVUSDT">CRV</option>
       <option value="NEARUSDT"selected>NEAR</option>
-       <option value="SUIUSDT">SUI</option>
+      <option value="SUIUSDT">SUI</option>
       <option value="DOGEUSDT">DOGE</option>
       <option value="XRPUSDT">XRP</option>
       <option value="XLMUSDT">XLM</option>
@@ -41,10 +41,12 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
 </header>
 
 <div class="charts">
+	
 <!-- چارت 1: BTC -->
 <div class="card"><h2>BTC/USDT</h2><div id="c1" style="height:340px"></div></div>
 <!-- چارت 2: USDT Dominance -->
 <div class="card"><h2>USDT Dominance</h2><div id="c2" style="height:340px"></div></div>
+
 <!-- 6 چارت برای ارز انتخاب شده -->
 <div class="card"><h2 id="t3">Selected – 15m</h2><div id="c3" style="height:340px"></div></div>
 <div class="card"><h2 id="t4">Selected – 30m</h2><div id="c4" style="height:340px"></div></div>
@@ -75,8 +77,14 @@ const selectedCharts = [
 const studies=["RSI@tv-basicstudies","CCI@tv-basicstudies"];
 const studiesOverrides={
  "RSI.length":14,
- "CCI.length":20
+ "RSI.plot.color":"#00ff00",
+ "CCI.length":20,
+ "CCI.plot.color":"#ff9900"
+
 };
+
+// ویجت‌های ثابت فقط یک بار ساخته می‌شوند
+const fixedWidgets = {};
 
 function createWidget(container,symbol,interval){
  document.getElementById(container).innerHTML='';
@@ -90,7 +98,7 @@ function createWidget(container,symbol,interval){
   locale:'fa',
   timezone:'Europe/Paris',
   style:'1',
-  hide_side_toolbar:true,
+  hide_side_toolbar:false,
   studies:studies,
   studies_overrides:studiesOverrides,
   enable_publishing:false,
@@ -101,11 +109,13 @@ function createWidget(container,symbol,interval){
 function buildCharts(){
  // چارت‌های ثابت
  baseCharts.forEach(c=>{
-   createWidget(c.id,c.s,c.i);
+   if(!fixedWidgets[c.id]) fixedWidgets[c.id] = createWidget(c.id,c.s,c.i);
  });
- // چارت‌های انتخاب شده
- selectedCharts.forEach((c)=>{
-   createWidget(c.id,`BINANCE:${selectedAsset}`,c.i);
+
+ // چارت‌های انتخاب شده: هر بار کامل بازسازی می‌شوند تا تغییر ارز کار کند
+ selectedCharts.forEach(c=>{
+   const sym = `BINANCE:${selectedAsset}`;
+   createWidget(c.id,sym,c.i);
    document.getElementById('t'+c.id.slice(1)).innerText = selectedAsset+' – '+c.title;
  });
 }
@@ -120,7 +130,6 @@ document.getElementById('assetSelect').addEventListener('change',e=>{
 function waitTV(){
  if(typeof TradingView!=='undefined'){
    buildCharts();
-
  } else setTimeout(waitTV,200);
 }
 waitTV();
