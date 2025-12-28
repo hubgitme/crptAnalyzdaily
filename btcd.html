@@ -44,8 +44,8 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
 
 <!-- چک‌باکس تایم‌فریم‌ها -->
 <div class="checkbox-container">
-  <label><input type="checkbox" class="chartToggle" data-target="c1" checked> BTC/USDT</label>
-  <label><input type="checkbox" class="chartToggle" data-target="c2" checked> USDT Dominance</label>
+<label><input type="checkbox" class="chartToggle" data-target="c1" checked> USDT Dominance</label> 
+  <label><input type="checkbox" class="chartToggle" data-target="c2" checked> BTC/USDT</label>
   <label><input type="checkbox" class="chartToggle" data-target="c3" checked> 15m</label>
   <label><input type="checkbox" class="chartToggle" data-target="c4" checked> 30m</label>
   <label><input type="checkbox" class="chartToggle" data-target="c5" checked> 1H</label>
@@ -57,8 +57,8 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
 <div class="charts">
 	
 <!-- چارت‌ها -->
-<div class="card" id="card-c1"><h2>BTC/USDT</h2><div id="c1" style="height:340px"></div></div>
-<div class="card" id="card-c2"><h2>USDT Dominance</h2><div id="c2" style="height:340px"></div></div>
+	<div class="card" id="card-c1"><h2>USDT Dominance</h2><div id="c1" style="height:340px"></div></div>
+<div class="card" id="card-c2"><h2>BTC/USDT</h2><div id="c2" style="height:340px"></div></div>
 <div class="card" id="card-c3"><h2 id="t3">Selected – 15m</h2><div id="c3" style="height:340px"></div></div>
 <div class="card" id="card-c4"><h2 id="t4">Selected – 30m</h2><div id="c4" style="height:340px"></div></div>
 <div class="card" id="card-c5"><h2 id="t5">Selected – 1H</h2><div id="c5" style="height:340px"></div></div>
@@ -72,8 +72,9 @@ footer{font-size:11px;color:var(--muted);margin-top:8px}
 
 <script>
 const baseCharts=[
-{id:'c1',s:'BINANCE:BTCUSDT',i:'D'},
-{id:'c2',s:'CRYPTOCAP:USDT.D',i:'D'}
+{id:'c1',s:'CRYPTOCAP:USDT.D',i:'D'},
+{id:'c2',s:'BINANCE:BTCUSDT',i:'D'},
+
 ];
 
 let selectedAsset = document.getElementById('assetSelect').value;
